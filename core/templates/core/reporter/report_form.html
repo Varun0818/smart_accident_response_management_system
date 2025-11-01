@@ -1,0 +1,165 @@
+{% extends 'core/base.html' %}
+
+{% block extra_css %}
+<style>
+    .report-panel {
+        background: #fff;
+        border-radius: 1.1rem;
+        box-shadow: 0 4px 28px #1051e024, 0 2px 12px #10e0b532;
+        padding: 2.2rem 2.2rem 2.6rem 2.2rem;
+        max-width: 650px;
+        margin: 2.5rem auto;
+    }
+    #map {
+        height: 240px;
+        width: 100%;
+        background: #f5f7fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 14px #1051e012;
+        margin-bottom: 20px;
+    }
+    .btn-danger:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-panel">
+    <div class="card-header mb-4 bg-danger text-white" style="border-radius:1rem 1rem 0 0;">
+        <h4>Report an Accident</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data" id="accidentForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Location</label>
+                <div id="map"></div>
+                <input type="hidden" id="latitude" name="latitude" value="0" required>
+                <input type="hidden" id="longitude" name="longitude" value="0" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description of Accident</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Severity</label>
+                <div class="d-flex gap-3">
+                    <div class="card p-2 flex-fill" style="border-left:5px solid #28a745; cursor:pointer;" onclick="selectSeverity('Minor')">
+                        <input type="radio" name="severity" value="Minor" id="severity-minor" class="d-none">
+                        <label for="severity-minor"><b>Minor</b></label>
+                        <p class="text-muted small mb-0">Minor injuries, no immediate danger</p>
+                    </div>
+                    <div class="card p-2 flex-fill" style="border-left:5px solid #ffc107; cursor:pointer;" onclick="selectSeverity('Moderate')">
+                        <input type="radio" name="severity" value="Moderate" id="severity-moderate" class="d-none">
+                        <label for="severity-moderate"><b>Moderate</b></label>
+                        <p class="text-muted small mb-0">Significant injuries, prompt attention needed</p>
+                    </div>
+                    <div class="card p-2 flex-fill" style="border-left:5px solid #dc3545; cursor:pointer;" onclick="selectSeverity('Severe')">
+                        <input type="radio" name="severity" value="Severe" id="severity-severe" class="d-none">
+                        <label for="severity-severe"><b>Severe</b></label>
+                        <p class="text-muted small mb-0">Life-threatening situation, immediate response required</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload Photo (optional)</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-danger btn-lg w-100" id="submitBtn" disabled>Loading Map...</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Disable submit until we have a real location and maps is loaded
+const submitBtn = document.getElementById('submitBtn');
+const accForm = document.getElementById('accidentForm');
+
+// Helper function: always update lat/lng and enable button!
+function setLocationAndEnableSubmit(lat, lng) {
+    document.getElementById('latitude').value = lat;
+    document.getElementById('longitude').value = lng;
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit Report";
+}
+
+// Robust Google Maps + Geolocation logic
+function initMap() {
+    const defaultLoc = { lat: 17.385, lng: 78.486 };
+    let map = new google.maps.Map(document.getElementById('map'), {
+        center: defaultLoc, zoom: 15
+    });
+    let marker;
+    // Prefer browser geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                const userLoc = { lat: position.coords.latitude, lng: position.coords.longitude };
+                map.setCenter(userLoc);
+                marker = new google.maps.Marker({
+                    position: userLoc, map: map, draggable: true, title: "Accident Location"
+                });
+                setLocationAndEnableSubmit(userLoc.lat, userLoc.lng);
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    const pos = marker.getPosition();
+                    setLocationAndEnableSubmit(pos.lat(), pos.lng());
+                });
+            },
+            // If permission denied, fallback
+            () => {
+                marker = new google.maps.Marker({
+                    position: defaultLoc, map: map, draggable: true, title: "Accident Location"
+                });
+                setLocationAndEnableSubmit(defaultLoc.lat, defaultLoc.lng);
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    const pos = marker.getPosition();
+                    setLocationAndEnableSubmit(pos.lat(), pos.lng());
+                });
+            }
+        );
+    } else {
+        // No geolocation support: use default
+        marker = new google.maps.Marker({
+            position: defaultLoc, map: map, draggable: true, title: "Accident Location"
+        });
+        setLocationAndEnableSubmit(defaultLoc.lat, defaultLoc.lng);
+        google.maps.event.addListener(marker, 'dragend', function() {
+            const pos = marker.getPosition();
+            setLocationAndEnableSubmit(pos.lat(), pos.lng());
+        });
+    }
+}
+
+// One-time severity UI logic
+function selectSeverity(severity) {
+    document.querySelectorAll('input[name="severity"]').forEach(i => i.checked = false);
+    document.getElementById(`severity-${severity.toLowerCase()}`).checked = true;
+    document.querySelectorAll('.card').forEach(card => card.classList.remove('border', 'shadow', 'bg-light', 'selected'));
+    document.querySelector(`input[value="${severity}"]`).closest('.card').classList.add('border', 'shadow', 'bg-light', 'selected');
+}
+
+// Final form validation before submission
+accForm.onsubmit = function(e) {
+    let lat = document.getElementById("latitude").value;
+    let lon = document.getElementById("longitude").value;
+    if (!lat || !lon || lat === "0" || lon === "0") {
+        alert("Please select your accident location on the map.");
+        e.preventDefault();
+        return false;
+    }
+    let severityChecked = document.querySelector('input[name="severity"]:checked');
+    if (!severityChecked) {
+        alert("Please select the accident severity.");
+        e.preventDefault();
+        return false;
+    }
+};
+// Attach Maps API with callback for auto map load
+</script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLPads4aCq6STE-8iQKH3U1_GcGvdTz3o&callback=initMap"></script>
+{% endblock %}

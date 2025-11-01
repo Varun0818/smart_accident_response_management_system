@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SARMS – Emergency Response{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@600;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+    <style>
+        :root {
+            --primary: #1051e0;
+            --accent: #10e0b5;
+            --glass: rgba(255,255,255,0.34);
+            --bg-dark: #16213e;
+            --text-main: #23272f;
+            --card-bg: #f6f8fa;
+            --radius: 1.2rem;
+        }
+        html, body {
+            font-family: 'Inter', 'Montserrat', Arial, sans-serif;
+            background: #fff !important;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-main);
+            transition: background 0.5s;
+            overflow-x: hidden;
+        }
+        body {
+            background: #fff !important;
+        }
+        /* ... the remainder of your CSS from previous version ... */
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg px-3 glass-card">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-lightning-charge-fill text-warning me-2"></i> SARMS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    {% block navbar_extra %}{% endblock %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="container my-5 fade-in">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer class="footer mt-auto glass-card">
+        <div>
+            <span><center>&copy; 2025 SARMS Emergency. All rights reserved.</center></span>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

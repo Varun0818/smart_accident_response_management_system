@@ -1,0 +1,125 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="home-container">
+    <h1 class="home-title">Smart Accident Response Management System</h1>
+    <p class="home-subtitle">A real-time emergency coordination platform designed to speed up medical response during road accidents</p>
+    <div class="btn-container">
+        <a href="{% url 'reporter_login' %}" class="btn btn-reporter btn-lg">
+            <i class="bi bi-person"></i> Reporter
+        </a>
+        <a href="{% url 'responder_login' %}" class="btn btn-responder btn-lg">
+            <i class="bi bi-truck"></i> Responder / Driver
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Container styling with glass effect and fade-in */
+.home-container {
+    max-width: 650px;
+    background: rgba(255,255,255,0.94);
+    border-radius: 1.3rem;
+    box-shadow: 0 4px 32px #1051e022, 0 2px 12px #10e0b533;
+    padding: 2.8rem 2.2rem;
+    margin: 4rem auto 2rem auto;
+    text-align: center;
+    backdrop-filter: blur(6px);
+    animation: fadeInBlock 0.95s cubic-bezier(.36,.8,.3,1);
+}
+@keyframes fadeInBlock {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0);}
+}
+.home-title {
+    font-family: 'Montserrat', 'Inter', Arial, sans-serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: .5px;
+    color: #1051e0;
+    margin-bottom: 0.8rem;
+    text-shadow: 0 6px 24px #10e0b544;
+    text-align: center;
+}
+.home-subtitle {
+    font-size: 1.07rem;
+    color: #353b4d;
+    margin-bottom: 2.2rem;
+    font-weight: 600;
+    letter-spacing: .06rem;
+    text-align: center;
+    opacity: 0.93;
+}
+.btn-container {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.7rem;
+}
+.btn {
+    flex: 1 0 200px;
+    padding: 0.95rem 0.75rem;
+    font-size: 1.13rem;
+    font-weight: 800;
+    border-radius: 2.3rem;
+    border: none;
+    outline: none;
+    position: relative;
+    box-shadow: 0 6px 32px #1051e033;
+    transition: all 0.23s cubic-bezier(.84,1.7,.79,1);
+    letter-spacing: .07rem;
+    cursor: pointer;
+    overflow: hidden;
+    margin-bottom: 0.6rem;
+    z-index: 2;
+}
+.btn-reporter {
+    background: linear-gradient(95deg, #1051e0 62%, #10e0b5 100%);
+    color: #fff !important;
+}
+.btn-responder {
+    background: linear-gradient(95deg, #10e0b5 35%, #1051e0 90%);
+    color: #fff !important;
+}
+.btn-reporter:focus, .btn-reporter:hover {
+    background: linear-gradient(95deg, #10e0b5 20%, #1051e0 94%);
+    box-shadow: 0 10px 40px #1051e055, 0 2px 12px #10e0b544;
+    transform: scale(1.05) translateY(-2px);
+}
+.btn-responder:focus, .btn-responder:hover {
+    background: linear-gradient(95deg, #1051e0 64%, #10e0b5 100%);
+    box-shadow: 0 12px 46px #10e0b566, 0 2px 16px #1051e055;
+    transform: scale(1.05) translateY(-2px);
+}
+.btn:active::after {
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 120%; height: 120%;
+    background: #10e0b5;
+    opacity: 0.22;
+    border-radius: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    animation: rippleBtn 0.4s linear;
+    z-index: 1;
+}
+@keyframes rippleBtn {
+    0% {transform: translate(-50%,-50%) scale(0);}
+    75% {opacity: .22;}
+    100% {transform: translate(-50%,-50%) scale(1.3); opacity:0;}
+}
+.btn i {
+    font-size: 1.5rem;
+    vertical-align: -10%;
+    margin-right: 0.6rem;
+    filter: drop-shadow(0 3px 10px #10e0b544);
+}
+@media (max-width: 760px) {
+    .home-container {padding: 1.3rem 0.4rem;}
+    .btn-container {flex-direction: column;}
+}
+</style>
+{% endblock %}
