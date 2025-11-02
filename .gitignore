@@ -38,3 +38,4 @@ serviceAccountKey.json
 
 # Ignore any local credential files named like *.credentials.json (optional pattern)
 *.credentials.json
+serviceAccountKey.json
