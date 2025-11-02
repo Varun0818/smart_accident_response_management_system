@@ -27,3 +27,14 @@ db.sqlite3
 
 # macOS
 .DS_Store
+
+# Secrets / service account keys
+# Do NOT commit service account JSON keys or other credential files
+serviceAccountKey.json
+*.p12
+*.pem
+*.key
+*.jks
+
+# Ignore any local credential files named like *.credentials.json (optional pattern)
+*.credentials.json
