@@ -5,7 +5,86 @@ from django.contrib import messages
 import json
 import requests
 from .models import AccidentReport
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+from .models import ResponderLocation
 
+@csrf_exempt
+def api_accept(request):
+    if request.method == 'PATCH':
+        if 'hospital_name' not in request.session:
+            return JsonResponse({'status': 'error', 'message': 'Not authenticated'}, status=401)
+        data = json.loads(request.body)
+        report_id = data.get('report_id')
+        hospital_name = request.session['hospital_name']  # Always use this key!
+        report = get_object_or_404(AccidentReport, id=report_id)
+        report.status = 'enroute'
+        report.assigned_hospital = hospital_name
+        report.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+@csrf_exempt
+def api_reject(request):
+    if request.method == "DELETE":
+        data = json.loads(request.body)
+        report_id = data.get("report_id")
+        AccidentReport.objects.filter(id=report_id).delete()
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
+@csrf_exempt
+def api_resolve(request):
+    if request.method == "PATCH":
+        data = json.loads(request.body)
+        report_id = data.get("report_id")
+        report = AccidentReport.objects.get(id=report_id)
+        report.status = "resolved"
+        report.save()
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
+@csrf_exempt
+def update_responder_location(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        data = json.loads(request.body)
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
+        rl, created = ResponderLocation.objects.update_or_create(
+            user=request.user,
+            defaults={'latitude': latitude, 'longitude': longitude}
+        )
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'unauthorized'}, status=401)
+
+# --- HAVERSINE DISTANCE (km) ---
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371.0  # Earth radius in km
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.asin(math.sqrt(a))
+    return R * c
+
+# --- TRACKING PAGE VIEW ---
+def tracking_view(request, report_id):
+    report = get_object_or_404(AccidentReport, id=report_id)
+    try:
+        responder = ResponderLocation.objects.get(user=report.assigned_responder)
+        distance_km = haversine(report.latitude, report.longitude, responder.latitude, responder.longitude)
+    except (ResponderLocation.DoesNotExist, AttributeError):  # AttributeError if assigned_responder missing
+        responder = None
+        distance_km = None
+
+    context = {
+        'report': report,
+        'responder': responder,
+        'distance_km': f"{distance_km:.2f}" if distance_km else "--",
+        'eta_min': f"{(distance_km/0.833):.0f}" if distance_km else "--"  # Assumes avg 50 km/h (0.833 km/min)
+    }
+    return render(request, 'tracking.html', context)
 
 
 
@@ -153,7 +232,7 @@ def responder_login(request):
         # Store in session for later use
         request.session['name'] = name
         request.session['responder_phone'] = phone
-        
+        request.session['hospital_name'] = name
         # No password check, just redirect to the dashboard
         return redirect('responder_dashboard')
         
@@ -217,43 +296,7 @@ def api_report(request):
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
-@csrf_exempt
-def api_accept(request):
-    """
-    API endpoint for a responder to accept or modify a case.
-    """
-    if request.method == 'PATCH':
-        try:
-            # Check if responder is "logged in" via session
-            if 'name' not in request.session:
-                return JsonResponse({'status': 'error', 'message': 'Not authenticated'}, status=401)
-                
-            data = json.loads(request.body)
-            report_id = data.get('report_id')
-            new_status = data.get('status') # This can be 'resolved'
-            
-            # Get responder's name from session
-            responder_name = request.session.get('name', 'Unknown Responder')
-            
-            report = get_object_or_404(AccidentReport, id=report_id)
-            
-            # --- MODIFIED LOGIC ---
-            if new_status == 'resolved':
-                # If the front-end sends a 'resolved' status, update it
-                report.status = 'resolved'
-            else:
-                # Otherwise, default action is to accept the case
-                report.status = 'enroute'
-                report.assigned_hospital = responder_name
-            
-            report.save()
-            
-            return JsonResponse({'status': 'success'})
-        
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
-    
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 def find_nearby_hospitals(lat, lon, report_id):
     """

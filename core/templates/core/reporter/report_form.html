@@ -2,69 +2,188 @@
 
 {% block extra_css %}
 <style>
-    .report-panel {
-        background: #fff;
-        border-radius: 1.1rem;
-        box-shadow: 0 4px 28px #1051e024, 0 2px 12px #10e0b532;
-        padding: 2.2rem 2.2rem 2.6rem 2.2rem;
-        max-width: 650px;
-        margin: 2.5rem auto;
-    }
-    #map {
-        height: 240px;
-        width: 100%;
-        background: #f5f7fa;
-        border-radius: 8px;
-        box-shadow: 0 2px 14px #1051e012;
-        margin-bottom: 20px;
-    }
-    .btn-danger:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-        opacity: 0.65;
-    }
+body {
+    background: linear-gradient(120deg, #fff 60%, #bfcfff 100%) no-repeat;
+    min-height: 100vh;
+}
+
+.report-panel {
+    background: #fff;
+    border-radius: 2.1rem;
+    box-shadow: 0 0 0 2px #f5f5fc, 0 10px 50px 0 #cac2ff44, 0 0 80px 18px #d8dfff22;
+    padding: 2.2rem 3.7rem 1.9rem 3.7rem;
+    max-width: 810px;
+    margin: 4.6rem auto 1.5rem auto;
+    transition: box-shadow .18s, transform .13s;
+    position: relative;
+}
+
+.report-panel:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 2.1rem;
+    box-shadow: 0 0 44px 14px #d3deff33;
+    opacity: 0.32;
+    z-index: 0;
+    filter: blur(14px);
+}
+
+.card-header {
+    border-radius: 2.1rem 2.1rem 0 0 !important;
+    background: linear-gradient(90deg,#bcb5fd 2%,#bca2fa 55%,#c6a8f9 120%) !important;
+    color: #fff !important;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: .2px;
+    text-align: center;
+    box-shadow: none;
+    border: none !important;
+    z-index: 1;
+    position: relative;
+}
+
+#map {
+    height: 160px;
+    background: #f5f7fa;
+    border-radius: 1.1rem;
+    box-shadow: 0 2px 14px #b5baf71a;
+    margin-bottom: 13px;
+    z-index: 1;
+    position: relative;
+}
+
+.form-label { font-weight: 600; color: #656281; margin-bottom: 4px;}
+.form-control, textarea.form-control {
+    border-radius: 1.7rem;
+    border: none;
+    font-size: 1.03rem;
+    background: #f7f9fa;
+    margin-bottom: .63rem;
+    padding: .95rem 1.2rem;
+    box-shadow: 0 2px 5px #e2e2fa06;
+}
+.form-control:focus, textarea.form-control:focus {
+    background: #f4f7ff;
+    box-shadow: 0 0 0 2px #c5bcf833;
+}
+
+.severity-row {
+    display: flex;
+    gap: 1.7rem;
+    justify-content: center;
+    margin-bottom: .7rem;
+}
+.severity-card {
+    width: 120px;
+    height: 120px;
+    border-radius: 1.25rem !important;
+    border: none;
+    box-shadow: 0 0px 12px #ab9bfd12;
+    background: #f5f7fd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: box-shadow .14s, background .13s;
+    outline: none;
+    padding: 0;
+    position: relative;
+}
+.severity-card.selected,
+.severity-card:focus,
+.severity-card:hover {
+    box-shadow: 0 3px 16px #6952ea27;
+    background: #eceefd;
+}
+.severity-card b {
+    font-size: 1.12rem;
+    letter-spacing: .01em;
+    margin-bottom: .33rem;
+}
+.severity-card label {
+    font-weight: 600;
+    margin-bottom: .23rem;
+    cursor: pointer;
+}
+.severity-card p {
+    font-size: .95rem;
+    color: #8887ad;
+    margin-bottom: 0;
+}
+.btn-danger, .btn-lg {
+    background: linear-gradient(90deg, #b997fc 2%, #baa4ff 88%);
+    color: #fff;
+    border: none;
+    border-radius: 2rem;
+    padding: .94rem 0;
+    font-size: 1.08rem;
+    font-weight: 800;
+    margin-top: 1.1rem;
+    width: 100%;
+    letter-spacing: .11em;
+    box-shadow: 0 2px 7px #cfc9ff14;
+    transition: background .16s, transform .11s;
+}
+.btn-danger:disabled {
+    background-color: #d6d2f6 !important;
+    color: #a1a7b9 !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+@media (max-width:1022px){
+    .report-panel {max-width:97vw;}
+    .severity-card { width:90px;height:90px;}
+    .card-header{font-size:1.15rem;}
+}
+@media (max-width:700px){
+    .report-panel {padding: 1.2rem .2rem;}
+    .severity-row{gap: .7rem;}
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="report-panel">
-    <div class="card-header mb-4 bg-danger text-white" style="border-radius:1rem 1rem 0 0;">
-        <h4>Report an Accident</h4>
+    <div class="card-header mb-3">
+        <h4 class="mb-0">Report an Accident</h4>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="z-index:1;position:relative;">
         <form method="post" enctype="multipart/form-data" id="accidentForm">
             {% csrf_token %}
-            <div class="mb-3">
+            <div class="mb-2">
                 <label class="form-label">Location</label>
                 <div id="map"></div>
                 <input type="hidden" id="latitude" name="latitude" value="0" required>
                 <input type="hidden" id="longitude" name="longitude" value="0" required>
             </div>
-            <div class="mb-3">
+            <div class="mb-2">
                 <label for="description" class="form-label">Description of Accident</label>
-                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                <textarea class="form-control" id="description" name="description" rows="2" required></textarea>
             </div>
-            <div class="mb-3">
+            <div class="mb-2">
                 <label class="form-label">Severity</label>
-                <div class="d-flex gap-3">
-                    <div class="card p-2 flex-fill" style="border-left:5px solid #28a745; cursor:pointer;" onclick="selectSeverity('Minor')">
+                <div class="severity-row">
+                    <div class="severity-card" onclick="selectSeverity('Minor')" tabindex="0">
                         <input type="radio" name="severity" value="Minor" id="severity-minor" class="d-none">
                         <label for="severity-minor"><b>Minor</b></label>
-                        <p class="text-muted small mb-0">Minor injuries, no immediate danger</p>
+                        <p>Minor injuries<br>no immediate danger</p>
                     </div>
-                    <div class="card p-2 flex-fill" style="border-left:5px solid #ffc107; cursor:pointer;" onclick="selectSeverity('Moderate')">
+                    <div class="severity-card" onclick="selectSeverity('Moderate')" tabindex="0">
                         <input type="radio" name="severity" value="Moderate" id="severity-moderate" class="d-none">
                         <label for="severity-moderate"><b>Moderate</b></label>
-                        <p class="text-muted small mb-0">Significant injuries, prompt attention needed</p>
+                        <p>Significant injuries<br>prompt attention needed</p>
                     </div>
-                    <div class="card p-2 flex-fill" style="border-left:5px solid #dc3545; cursor:pointer;" onclick="selectSeverity('Severe')">
+                    <div class="severity-card" onclick="selectSeverity('Severe')" tabindex="0">
                         <input type="radio" name="severity" value="Severe" id="severity-severe" class="d-none">
                         <label for="severity-severe"><b>Severe</b></label>
-                        <p class="text-muted small mb-0">Life-threatening situation, immediate response required</p>
+                        <p>Life-threatening<br>immediate response</p>
                     </div>
                 </div>
             </div>
-            <div class="mb-3">
+            <div class="mb-2">
                 <label for="image" class="form-label">Upload Photo (optional)</label>
                 <input type="file" class="form-control" id="image" name="image" accept="image/*">
             </div>
@@ -76,26 +195,20 @@
 
 {% block extra_js %}
 <script>
-// Disable submit until we have a real location and maps is loaded
 const submitBtn = document.getElementById('submitBtn');
 const accForm = document.getElementById('accidentForm');
-
-// Helper function: always update lat/lng and enable button!
 function setLocationAndEnableSubmit(lat, lng) {
     document.getElementById('latitude').value = lat;
     document.getElementById('longitude').value = lng;
     submitBtn.disabled = false;
     submitBtn.textContent = "Submit Report";
 }
-
-// Robust Google Maps + Geolocation logic
 function initMap() {
     const defaultLoc = { lat: 17.385, lng: 78.486 };
     let map = new google.maps.Map(document.getElementById('map'), {
         center: defaultLoc, zoom: 15
     });
     let marker;
-    // Prefer browser geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             position => {
@@ -110,7 +223,6 @@ function initMap() {
                     setLocationAndEnableSubmit(pos.lat(), pos.lng());
                 });
             },
-            // If permission denied, fallback
             () => {
                 marker = new google.maps.Marker({
                     position: defaultLoc, map: map, draggable: true, title: "Accident Location"
@@ -123,7 +235,6 @@ function initMap() {
             }
         );
     } else {
-        // No geolocation support: use default
         marker = new google.maps.Marker({
             position: defaultLoc, map: map, draggable: true, title: "Accident Location"
         });
@@ -134,16 +245,12 @@ function initMap() {
         });
     }
 }
-
-// One-time severity UI logic
 function selectSeverity(severity) {
     document.querySelectorAll('input[name="severity"]').forEach(i => i.checked = false);
     document.getElementById(`severity-${severity.toLowerCase()}`).checked = true;
-    document.querySelectorAll('.card').forEach(card => card.classList.remove('border', 'shadow', 'bg-light', 'selected'));
-    document.querySelector(`input[value="${severity}"]`).closest('.card').classList.add('border', 'shadow', 'bg-light', 'selected');
+    document.querySelectorAll('.severity-row .severity-card').forEach(card => card.classList.remove('border', 'shadow', 'selected'));
+    document.querySelector(`input[value="${severity}"]`).closest('.severity-card').classList.add('border', 'shadow', 'selected');
 }
-
-// Final form validation before submission
 accForm.onsubmit = function(e) {
     let lat = document.getElementById("latitude").value;
     let lon = document.getElementById("longitude").value;
@@ -159,7 +266,10 @@ accForm.onsubmit = function(e) {
         return false;
     }
 };
-// Attach Maps API with callback for auto map load
 </script>
-<script async src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+{% if GOOGLE_MAPS_API_KEY %}
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap"></script>
+{% else %}
+<!-- Google Maps API key not configured; map will not load. Set GOOGLE_MAPS_API_KEY in env. -->
+{% endif %}
 {% endblock %}

@@ -2,94 +2,25 @@
 
 {% block extra_css %}
 <style>
-.case-details-panel {
-    background: #fff;
-    border-radius: 1.1rem;
-    box-shadow: 0 4px 28px #1051e024, 0 2px 12px #10e0b532;
-    padding: 2rem 2.1rem 2.3rem 2.1rem;
-    max-width: 710px;
-    margin: 2.5rem auto;
-}
-.card-header {
-    background: #1051e0;
-    border-radius: 1rem 1rem 0 0;
-    box-shadow: 0 2px 6px #1051e022;
-}
-.card-header h4 { color: #fff; font-weight: bold; margin-bottom: 0; text-shadow: 0 2px 18px #fff1;}
-#map {
-    height: 220px;
-    width: 100%;
-    background: #f5f5fa;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 12px #1051e010;
-}
-.table th {
-    width: 160px;
-    color: #243354;
-    background: #f7fafe;
-    font-weight: 700;
-}
-.table td { background: #fbfbfc; font-size: 1.06rem;}
-.severity-badge {
-    font-size: 1.16rem;
-    padding: 6px 18px;
-    border-radius: 9px;
-    font-weight: 700;
-    letter-spacing: 0.03em;
-    box-shadow: 0 1px 8px #bbb6;
-}
-.badge.bg-success {background: #28a745;}
-.badge.bg-warning {background: #ffc107; color: #222;}
-.badge.bg-danger {background:#dc3545;}
-.action-buttons {
-    display: flex;
-    gap: 1.2rem;
-    margin-top: 24px;
-    flex-wrap: wrap;
-}
-.action-buttons .btn-success {
-    background: #28a745;
-    color: #fff;
-    border-radius: 2rem;
-    padding: 11px 34px;
-    font-weight: 700;
-    box-shadow: 0 2px 12px #28a74526;
-    font-size: 1.07rem;
-    border: none;
-    transition: 0.19s all;
-}
-.action-buttons .btn-success:hover, .action-buttons .btn-success:focus {
-    background: #218838; color: #fff; box-shadow: 0 3px 24px #28a74529;
-}
-.action-buttons .btn-secondary {
-    background: #6c757d;
-    color: #fff;
-    border-radius: 2rem;
-    font-weight: 700;
-    padding: 11px 34px;
-    border: none;
-    font-size: 1.07rem;
-}
-.action-buttons .btn-secondary:hover, .action-buttons .btn-secondary:focus {
-    background: #54616c;
-}
-.action-buttons .btn-outline-primary {
-    border-radius: 2rem;
-    padding: 11px 34px;
-    font-weight: 700;
-    font-size: 1.05rem;
-}
-.img-fluid.rounded {
-    box-shadow: 0 2px 18px #1051e02a;
-    border-radius: 1.1rem;
-    max-width: 340px;
-    margin-top: 3px;
-}
-@media (max-width: 760px){
-    .case-details-panel{padding: 1rem;}
-    .table th{width: 38%;}
-}
+body { background: linear-gradient(120deg, #fff 62%, #bfcfff 100%) no-repeat; min-height: 100vh; }
+.case-details-panel { background: #fff; border-radius: 1.5rem; box-shadow: 0 8px 36px #bcbcff40, 0 2px 12px #ac8df521;
+   max-width: 420px; margin: 6vh auto 2.3rem auto; padding: 2.1rem 2.2rem; }
+.card-header { text-align: center; background: none; border-radius: 1.5rem 1.5rem 0 0; border: none !important; box-shadow: none !important; font-size: 1.5rem; font-weight: 700; letter-spacing: .01em; padding-bottom: .5em; }
+.table th, .table td {background: #f7f7fd; border: none; font-size: 1.07rem; vertical-align: middle;}
+.table th { color: #525185; font-weight: bold; padding-left: 0.4rem; width: 46%;}
+.table td { color: #2b2c3e; font-weight: 500;}
+.severity-badge { font-size: 1rem; border-radius: .8rem; padding: 5px 13px; background: #f1e1fa !important; color: #a16bdc !important; font-weight: 700; letter-spacing: .02em; margin-left: 0.7em; box-shadow: 0 1px 10px #b595e71e;}
+.action-buttons { display: flex; gap: 1.1rem; justify-content: center; margin-top: 2em; flex-wrap: wrap;}
+.action-buttons .btn-success, .action-buttons .btn-secondary { border-radius: 2em; font-weight: 700; font-size: 1.14em; padding: 0.6em 2.3em; box-shadow: 0 3px 12px #b4a8ff2e;}
+.action-buttons .btn-success { background: linear-gradient(100deg, #ad75d9 12%, #bc74f9 100%); color: #fff !important; border: none;}
+.action-buttons .btn-success:hover, .action-buttons .btn-success:focus { background: linear-gradient(100deg, #bc74f9 2%, #ad75d9 100%); color: #fff !important; box-shadow: 0 12px 42px #ac8df541;}
+.action-buttons .btn-secondary { background: #ede9fa; color: #766fc1; border: none;}
+.action-buttons .btn-secondary:hover, .action-buttons .btn-secondary:focus { background: #e2d3f9; color: #8f78ed;}
+.action-buttons .btn-outline-primary { border-radius: 2em; font-weight: 700; padding: .6em 2.1em; font-size: 1.06rem; border: 2px solid #d5c1fd; background: #fff;}
+.action-buttons .btn-outline-primary:hover, .action-buttons .btn-outline-primary:focus { background: #efeafd; border-color: #a17efa;}
+#map { height: 180px; border-radius: 1.1rem; margin-bottom: 25px; margin-top: 10px; background: #f8f7fd; box-shadow: 0 2px 14px #deddfc1c;}
+.img-fluid.rounded { border-radius: 1.05em; box-shadow: 0 2px 18px #acb5fd2a; margin-top: 3px; max-width: 327px;}
+@media (max-width: 650px){ .case-details-panel {max-width: 98vw; padding:1.15rem .35em;} .table th{width:40%;} }
 </style>
 {% endblock %}
 
@@ -100,63 +31,40 @@
     </div>
     <div class="card-body px-0">
         <div id="map"></div>
-        <h5 class="mb-3">Accident Information</h5>
+        <h5 class="mb-3" style="margin-left:.12em;">Accident Information</h5>
         <table class="table table-bordered align-middle">
-            <tr>
-                <th>Description:</th>
-                <td>{{ report.description }}</td>
-            </tr>
-            <tr>
-                <th>Severity:</th>
+            <tr><th>Description:</th><td>{{ report.description }}</td></tr>
+            <tr><th>Severity:</th>
                 <td>
-                    {% if report.severity == 'Minor' %}
-                    <span class="badge bg-success severity-badge">Minor</span>
-                    {% elif report.severity == 'Moderate' %}
-                    <span class="badge bg-warning severity-badge">Moderate</span>
+                    {% if report.severity == "Minor" %}
+                        <span class="badge bg-success severity-badge">Minor</span>
+                    {% elif report.severity == "Moderate" %}
+                        <span class="badge bg-warning severity-badge">Moderate</span>
                     {% else %}
-                    <span class="badge bg-danger severity-badge">Severe</span>
+                        <span class="badge bg-danger severity-badge">Severe</span>
                     {% endif %}
                 </td>
             </tr>
-            <tr>
-                <th>Reporter:</th>
-                <td>{{ report.reporter_name }}</td>
-            </tr>
-            <tr>
-                <th>Contact:</th>
-                <td>{{ report.phone }}</td>
-            </tr>
-            <tr>
-                <th>Reported At:</th>
-                <td>{{ report.timestamp }}</td>
-            </tr>
-            <tr>
-                <th>Status:</th>
+            <tr><th>Reporter:</th><td>{{ report.reporter_name }}</td></tr>
+            <tr><th>Contact:</th><td>{{ report.phone }}</td></tr>
+            <tr><th>Reported At:</th><td>{{ report.timestamp }}</td></tr>
+            <tr><th>Status:</th>
                 <td>
                     {% if report.status == 'reported' %}
-                    <span class="badge bg-secondary">Reported</span>
+                        <span class="badge bg-secondary">Reported</span>
                     {% elif report.status == 'alerted' %}
-                    <span class="badge bg-warning">Alerted</span>
+                        <span class="badge bg-warning">Alerted</span>
                     {% elif report.status == 'enroute' %}
-                    <span class="badge bg-info">En Route</span>
+                        <span class="badge bg-info">En Route</span>
                     {% else %}
-                    <span class="badge bg-success">Resolved</span>
+                        <span class="badge bg-success">Resolved</span>
                     {% endif %}
                 </td>
             </tr>
             {% if report.status == 'enroute' %}
-            <tr>
-                <th>Assigned To:</th>
-                <td>{{ report.assigned_hospital }}</td>
-            </tr>
-            <tr>
-                <th>Distance:</th>
-                <td>{{ report.live_distance_km|default:"--" }} km</td>
-            </tr>
-            <tr>
-                <th>ETA:</th>
-                <td>{{ report.eta_min|default:"--" }} min</td>
-            </tr>
+            <tr><th>Assigned To:</th><td>{{ report.assigned_hospital }}</td></tr>
+            <tr><th>Distance:</th><td>{{ report.live_distance_km|default:"--" }} km</td></tr>
+            <tr><th>ETA:</th><td>{{ report.eta_min|default:"--" }} min</td></tr>
             {% endif %}
         </table>
         {% if report.image %}
@@ -165,12 +73,12 @@
             <img src="{{ report.image.url }}" class="img-fluid rounded" alt="Accident Photo">
         </div>
         {% endif %}
-        <div class="action-buttons">
+        <div class="action-buttons" style="margin-top:2em;">
             {% if report.status == 'alerted' %}
-            <button class="btn btn-success" onclick="acceptCase()">Accept Case</button>
-            <button class="btn btn-secondary">Reject</button>
+                <button type="button" class="btn btn-success" onclick="acceptCase()">Accept Case</button>
+                <button type="button" class="btn btn-secondary" onclick="rejectCase()">Reject</button>
             {% elif report.status == 'enroute' and report.assigned_hospital == request.session.hospital_name %}
-            <button class="btn btn-success">Mark as Resolved</button>
+                <button type="button" class="btn btn-success" onclick="resolveCase()">Mark as Resolved</button>
             {% endif %}
             <a href="{% url 'responder_dashboard' %}" class="btn btn-outline-primary">Back to Dashboard</a>
         </div>
@@ -180,6 +88,44 @@
 
 {% block extra_js %}
 <script>
+function acceptCase() {
+    fetch('/api/accept/', {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            report_id: {{ report.id }},
+            hospital_name: "{{ request.session.hospital_name }}"
+        })
+    })
+    .then(res => res.json()).then(data => {
+        if (data.status === 'success') location.reload();
+        else alert('Error: ' + data.message)
+    });
+}
+function rejectCase() {
+    if (!confirm('Are you sure you want to reject this case?')) return;
+    fetch('/api/reject/', {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({report_id: {{ report.id }}})
+    })
+    .then(res => res.json()).then(data => {
+        if (data.status === 'success') window.location.href = "{% url 'responder_dashboard' %}";
+        else alert('Error: ' + data.message)
+    });
+}
+function resolveCase() {
+    if (!confirm('Mark this case as resolved and close it?')) return;
+    fetch('/api/resolve/', {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({report_id: {{ report.id }}})
+    })
+    .then(res => res.json()).then(data => {
+        if (data.status === 'success') window.location.href = "{% url 'responder_dashboard' %}";
+        else alert('Error: ' + data.message)
+    });
+}
 let map, marker;
 function initMap() {
     const accidentLocation = { lat: {{ report.latitude }}, lng: {{ report.longitude }} };
@@ -196,29 +142,11 @@ function initMap() {
         }
     });
 }
-function acceptCase() {
-    fetch('/api/accept/', {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify({
-            report_id: {{ report.id }},
-            hospital_name: "{{ request.session.hospital_name }}"
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') window.location.reload();
-        else alert('Error: ' + data.message);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-    });
-}
 window.onload = initMap;
-setTimeout(function() { location.reload(); }, 30000);
 </script>
+{% if GOOGLE_MAPS_API_KEY %}
+<script async src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap"></script>
+{% else %}
+<!-- Google Maps API key not configured; map will not load. Set GOOGLE_MAPS_API_KEY in env. -->
+{% endif %}
 {% endblock %}

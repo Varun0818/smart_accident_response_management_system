@@ -1,27 +1,107 @@
 {% extends 'core/base.html' %}
 
+{% block extra_css %}
+<style>
+body {
+    background: linear-gradient(120deg, #fff 55%, #95a7f6 100%) no-repeat;
+    min-height: 100vh;
+}
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none !important;
+}
+.glass-login-card {
+    background: rgba(255,255,255,0.98);
+    border-radius: 2rem;
+    box-shadow: 0 6px 38px #acb3fd38, 0 2px 18px #bdaaff30;
+    padding: 4rem 3.2rem 3rem 3.2rem;
+    min-width: 400px;
+    max-width: 460px;
+    margin: 3rem auto;
+    transition: box-shadow .16s, transform .13s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.glass-login-card:hover, .glass-login-card:focus-within {
+    box-shadow: 0 8px 40px #6671ea44, 0 2px 32px #bdaafd22;
+    transform: translateY(-4px) scale(1.02);
+}
+.login-label {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #20252d;
+    margin-bottom: 2.7rem;
+    letter-spacing: .5px;
+    text-align: center;
+}
+.login-input {
+    border: none;
+    border-radius: 2.3rem;
+    background: #f5f7fa;
+    margin-bottom: 1.3rem;
+    font-size: 1.18rem;
+    padding: 1.2rem 2rem;
+    box-shadow: 0 2px 16px #e2e1fa13;
+    transition: box-shadow .14s;
+    outline: none;
+}
+.login-input:focus {
+    box-shadow: 0 0 0 3px #6e80ff30;
+    background: #f5f9ff;
+}
+.login-btn {
+    background: linear-gradient(120deg,#acaeff 40%,#c983fd 120%);
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 1.7rem;
+    padding: 1rem 0;
+    width: 100%;
+    font-size: 1.18rem;
+    margin: 1.7rem 0 .7rem 0;
+    box-shadow: 0 4px 16px #c2b6fd33, 0 2px 7px #bdaafd22;
+    letter-spacing: .15em;
+    outline: none;
+    transition: background .18s, transform .15s;
+}
+.login-btn:hover, .login-btn:focus {
+    background: linear-gradient(100deg,#9875fa 30%,#a49cf8 120%);
+    color: #fff;
+    transform: scale(1.04);
+    box-shadow: 0 8px 36px #beadfd55;
+}
+.login-links {
+    text-align: center;
+    margin-top: 1.2rem;
+}
+.login-links a {
+    color: #7a77b9;
+    font-size: 1.18rem;
+    text-decoration: none;
+    transition: color .14s;
+}
+.login-links a:hover { color: #584adf; text-decoration: underline;}
+@media (max-width: 600px) {
+    .glass-login-card {padding: 1.2rem; min-width:90%;}
+    .login-wrapper {padding: 1rem;}
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-danger text-white">
-                <h4 class="mb-0">Reporter Login</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Your Name</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" required>
-                    </div>
-                    <button type="submit" class="btn btn-danger">Continue</button>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="login-wrapper">
+  <div class="glass-login-card">
+    <form method="post" autocomplete="off" style="width:100%;max-width:370px;">
+      {% csrf_token %}
+      <div class="login-label">Reporter Setup</div>
+      <input type="text" name="name" id="name" class="login-input" placeholder="Name" required>
+      <input type="text" name="phone" id="phone" class="login-input" placeholder="Phone" required>
+      <button type="submit" class="login-btn">Proceed</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

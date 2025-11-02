@@ -1,28 +1,108 @@
 {% extends 'core/base.html' %}
 
+{% block extra_css %}
+<style>
+body {
+    background: #f7f7fc;
+    min-height: 100vh;
+}
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none !important;
+}
+.glass-login-card {
+    background: #fff;
+    border-radius: 2.1rem;
+    box-shadow: 0 0 0 2px #f5f5fc, 0 10px 50px 0 #cac2ff44, 0 0 80px 18px #d8dfff22;
+    padding: 4.2rem 3.6rem 3.6rem 3.6rem;
+    min-width: 430px;
+    max-width: 490px;
+    margin: 1.5rem;
+    transition: box-shadow .18s, transform .16s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+.glass-login-card:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 2.2rem;
+    box-shadow: 0 0 58px 26px #d4daff44;
+    z-index: 0;
+    filter: blur(15px);
+    opacity: 0.8;
+}
+.login-label {
+    font-size: 2.35rem;
+    font-weight: 800;
+    color: #292a2c;
+    margin-bottom: 2.4rem;
+    letter-spacing: .2px;
+    text-align: center;
+    position: relative; z-index:1;
+}
+.login-input {
+    border: none;
+    border-radius: 2.9rem;
+    background: #f5f7fa;
+    margin-bottom: 1.56rem;
+    font-size: 1.32rem;
+    padding: 1.4rem 2.1rem;
+    width: 100%;
+    box-shadow: none;
+    color: #5a6071;
+    transition: box-shadow .12s;
+    outline: none;
+    position: relative; z-index:1;
+}
+.login-input:focus {
+    background: #f5f9ff;
+    box-shadow: 0 0 0 3px #c8bafd33;
+}
+.login-btn {
+    background: linear-gradient(90deg,#bcb5fd 12%,#bca2fa 55%,#c6a8f9 95%);
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 2rem;
+    padding: 1.37rem 0;
+    width: 100%;
+    font-size: 1.32rem;
+    margin: 1.3rem 0 .7rem 0;
+    box-shadow: 0 8px 35px #bdb8ff33;
+    letter-spacing: .17em;
+    outline: none;
+    transition: background .16s, transform .13s, box-shadow .13s;
+    position: relative; z-index:1;
+}
+.login-btn:hover, .login-btn:focus {
+    background: linear-gradient(87deg,#a996f4 8%,#9090ee 70%,#b19ef8 97%);
+    color: #fff;
+    transform: scale(1.035);
+    box-shadow: 0 12px 46px #ccbbff54;
+}
+@media (max-width: 600px) {
+    .glass-login-card {padding: 1.4rem; min-width:97vw;max-width:99vw;}
+    .login-wrapper {padding: 0;}
+}
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Responder Login</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="hospital_name" class="form-label">Hospital / Ambulance Service Name</label>
-                        <input type="text" class="form-control" id="hospital_name" name="hospital_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Number</label>
-                        <input type="number" class="form-control" id="password" name="password" required>
-                        <div class="form-text">For demo purposes, use password: demo123</div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="login-wrapper">
+  <div class="glass-login-card">
+    <form method="post" autocomplete="off" style="width:100%;max-width:340px;z-index:1;position:relative;">
+      {% csrf_token %}
+      <div class="login-label">Responder Setup</div>
+      <input type="text" name="name" id="name" class="login-input" placeholder="Name" required>
+      <input type="text" name="phone" id="phone" class="login-input" placeholder="Phone" required>
+      <button type="submit" class="login-btn">Proceed</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

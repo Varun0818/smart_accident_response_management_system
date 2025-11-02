@@ -2,195 +2,141 @@
 
 {% block extra_css %}
 <style>
-    /* --- ADDED: Map Style --- */
-    #map {
-        height: 250px;
-        width: 100%;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        background: #f5f5fa;
-        box-shadow: 0 2px 12px #1051e010;
-    }
-
-    .status-card {
-        text-align: center;
-        padding: 30px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-    .status-reported {
-        background-color: #f8d7da;
-    }
-    .status-alerted {
-        background-color: #fff3cd;
-    }
-    .status-enroute {
-        background-color: #d1e7dd;
-    }
-    .status-icon {
-        font-size: 48px;
-        margin-bottom: 15px;
-    }
-    .stats-container {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 20px;
-    }
-    .stat-item {
-        text-align: center;
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        width: 45%;
-    }
-    .stat-value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #0d6efd;
-    }
+body {
+    background: linear-gradient(120deg, #fff 60%, #bfcfff 100%) no-repeat;
+    min-height: 100vh;
+}
+.panel {
+    background: #fff;
+    border-radius: 2.1rem;
+    box-shadow: 0 0 0 2px #f5f5fc, 0 8px 50px 0 #b5c8fd24, 0 0 80px 14px #dde7ff28;
+    padding: 2.2rem 2.8rem 1.6rem 2.8rem;
+    max-width: 550px;
+    margin: 2.6rem auto 2.5rem auto;
+    position: relative;
+    transition: box-shadow .17s;
+}
+.panel:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 2.1rem;
+    box-shadow: 0 0 55px 14px #b3a7fc30;
+    opacity: 0.24;
+    z-index: 0;
+    filter: blur(15px);
+}
+.card-header {
+    border-radius: 2.1rem 2.1rem 0 0 !important;
+    background: linear-gradient(90deg,#bcb5fd 2%,#bca2fa 55%,#c6a8f9 120%) !important;
+    color: #fff !important;
+    font-size: 1.43rem;
+    font-weight: 800;
+    letter-spacing: .2px;
+    text-align: center;
+    border: none !important;
+    box-shadow: none;
+}
+.status-summary {
+    background: #f2f7fa;
+    text-align: center;
+    border-radius: 1.2rem;
+    box-shadow: 0 1.5px 8px #bfbbfe12;
+    padding: 1.8rem 1rem 1.3rem 1rem;
+    margin-top: 1.3rem;
+}
+.status-summary img { height: 53px;}
+.status-summary h3 { margin-top:.7em;margin-bottom:.25em;}
+.status-summary small {color:#6a78a1}
+.detail-table th { text-align:right; color:#495;}
+.severity-badge {
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: .8rem;
+    padding:3px 13px;
+    margin-left: .7rem;
+    background: #fbe0ee !important;
+    color: #d45381 !important;
+}
+#map {
+    height: 180px;
+    border-radius: 1.1rem;
+    margin: 10px 0 18px 0;
+    background: #f5f7fa;
+    box-shadow: 0 2px 14px #b5baf71a;
+}
+.mt-4{margin-top:1.6rem !important;}
+.mb-2{margin-bottom:.7rem !important;}
+@media (max-width: 750px){
+    .panel{padding:1.2rem .2rem;max-width:98vw;}
+    .card-header{font-size:1.06rem;}
+    #map{height:100px;}
+}
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Accident Response Status</h4>
+<div class="panel">
+    <div class="card-header mb-3">
+        <h4 class="mb-0">Accident Response Status</h4>
+    </div>
+    <div>
+        <b style="margin-left:.23em;">Live Tracking</b>
+        <div id="map"></div>
+    </div>
+    <div class="status-summary mb-4">
+        <img src="https://cdn-icons-png.flaticon.com/512/2967/2967253.png" alt="Ambulance">
+        <h3>Ambulance En Route</h3>
+        <small>{% if responder %}Responding: {{ responder.user.username }}{% else %}None is responding to your emergency{% endif %}</small>
+        <div class="d-flex justify-content-around mt-3">
+            <div>
+                <div><b>Distance</b></div>
+                <b style="font-size: 1.5rem;">{{ distance_km }} <span style="font-size:.95rem;">km</span></b>
             </div>
-            <div class="card-body">
-                <!-- --- ADDED: Map Container --- -->
-                <h5 class="mb-3">Live Tracking</h5>
-                <div id="map"></div>
-
-                {% if report.status == 'reported' %}
-                <div class="status-card status-reported">
-                    <div class="status-icon">⏳</div>
-                    <h3>Finding Nearby Emergency Services</h3>
-                    <p>Please wait while we locate the nearest hospitals...</p>
-                </div>
-                {% elif report.status == 'alerted' %}
-                <div class="status-card status-alerted">
-                    <div class="status-icon">🚨</div>
-                    <h3>Nearby Hospitals Have Been Alerted</h3>
-                    <p>Waiting for a hospital to accept your case...</p>
-                </div>
-                {% elif report.status == 'enroute' %}
-                <div class="status-card status-enroute">
-                    <div class="status-icon">🚑</div>
-                    <h3>Ambulance En Route</h3>
-                    <p>{{ report.assigned_hospital }} is responding to your emergency</p>
-                    
-                    <div class="stats-container">
-                        <div class="stat-item">
-                            <div class="stat-label">Distance</div>
-                            <div class="stat-value">{{ report.live_distance_km|default:"--" }} km</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">ETA</div>
-                            <div class="stat-value">{{ report.eta_min|default:"--" }} min</div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                
-                <div class="mt-4">
-                    <h5>Report Details</h5>
-                    <table class="table">
-                        <tr>
-                            <th>Description:</th>
-                            <td>{{ report.description }}</td>
-                        </tr>
-                        <tr>
-                            <th>Severity:</th>
-                            <td>
-                                {% if report.severity == 'Minor' %}
-                                <span class="badge bg-success">Minor</span>
-                                {% elif report.severity == 'Moderate' %}
-                                <span class="badge bg-warning">Moderate</span>
-                                {% else %}
-                                <span class="badge bg-danger">Severe</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Reported At:</th>
-                            <td>{{ report.timestamp }}</td>
-                        </tr>
-                    </table>
-                </div>
+            <div>
+                <div><b>ETA</b></div>
+                <b style="font-size: 1.5rem;">{{ eta_min }} <span style="font-size:.95rem;">min</span></b>
             </div>
         </div>
     </div>
+    <h6 class="mt-4 mb-2">Report Details</h6>
+    <table class="table detail-table">
+        <tr>
+            <th>Description:</th>
+            <td>{{ report.description }}</td>
+        </tr>
+        <tr>
+            <th>Severity:</th>
+            <td><span class="severity-badge">{{ report.severity }}</span></td>
+        </tr>
+        <tr>
+            <th>Reported At:</th>
+            <td>{{ report.timestamp }}</td>
+        </tr>
+    </table>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // --- ADDED: Map JavaScript ---
-    let map, accidentMarker, reporterMarker;
-
-    function initMap() {
-        const accidentLocation = { lat: {{ report.latitude }}, lng: {{ report.longitude }} };
-        
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: accidentLocation, 
-            zoom: 15
-        });
-
-        // 1. Add a marker for the accident location
-        accidentMarker = new google.maps.Marker({
-            position: accidentLocation,
-            map: map,
-            title: "Accident Location",
-            icon: {
-                url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                scaledSize: new google.maps.Size(40, 40)
-            }
-        });
-
-        // 2. Get and watch the reporter's live location
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(
-                (position) => {
-                    const reporterPos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                    };
-
-                    // Create the marker if it doesn't exist
-                    if (!reporterMarker) {
-                        reporterMarker = new google.maps.Marker({
-                            position: reporterPos,
-                            map: map,
-                            title: "Your Location",
-                            icon: {
-                                // Using a blue dot to differentiate
-                                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                                scaledSize: new google.maps.Size(40, 40)
-                            }
-                        });
-                    } else {
-                        // Just update the position if the marker already exists
-                        reporterMarker.setPosition(reporterPos);
-                    }
-                },
-                () => {
-                    // Handle error (e.g., user denies location permission)
-                    console.log("Error getting reporter's location.");
-                }
-            );
-        }
-    }
-
-    // Load the map when the window is ready
-    window.onload = initMap;
-    // --- End of new map code ---
-
-
-    // Refresh the page every 30 seconds to get status updates
-    setTimeout(function() {
-        location.reload();
-    }, 30000);
+function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {zoom: 13, center: {lat: {{ report.latitude }}, lng: {{ report.longitude }}}});
+    var reporter = new google.maps.Marker({
+      position: { lat: {{ report.latitude }}, lng: {{ report.longitude }} },
+      map: map,
+      title: "Incident Location",
+      icon: { url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png" }
+    });
+    {% if responder %}
+    var responderMarker = new google.maps.Marker({
+      position: { lat: {{ responder.latitude }}, lng: {{ responder.longitude }} },
+      map: map,
+      title: "Ambulance Location",
+      icon: { url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" }
+    });
+    {% endif %}
+}
+window.initMap = initMap;
 </script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=Your_API_Key&callback=initMap"></script>
 {% endblock %}
